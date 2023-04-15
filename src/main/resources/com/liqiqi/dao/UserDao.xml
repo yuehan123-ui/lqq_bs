@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.liqiqi.dao.UserDao">
+    <!--持久化对灯光的指令-->
+    <insert id="insertLight" parameterType="com.liqiqi.pojo.LongRangeControlLight">
+        INSERT INTO longRangeControlLight VALUES(#{longRangeControlLight},#{time})
+    </insert>
+
+    <!--持久化对步进电机的指令-->
+    <insert id="insertSteppingMotor" parameterType="com.liqiqi.pojo.LongRangeControlSteppingmotor">
+        INSERT INTO longRangeControlSteppingmotor VALUES (#{longRangeControlSteppingmotor},#{time})
+    </insert>
+
+    <!--持久化对直流电机状态的指令-->
+    <insert id="insertDcMotor" parameterType="com.liqiqi.pojo.LongRangeControlDcmotor">
+        insert into longRangeControlDcmotor values (#{longRangeControlDcmotor},#{time});
+    </insert>
+
+    <!--持久化对水泵的指令-->
+    <insert id="insertWaterPump" parameterType="com.liqiqi.pojo.LongRangeControlWaterpump">
+        INSERT INTO longRangeControlWaterpump VALUES (#{longRangeControlWaterpump},#{time})
+    </insert>
+    
+    <!--持久化对手动控制的指令-->
+    <insert id="insertManual" parameterType="com.liqiqi.pojo.Manual">
+        insert into manual values (#{manual},#{time});
+    </insert>
+
+    <!--串口数据持久化到数据库-->
+    <insert id="insertDataFrom8266" parameterType="com.liqiqi.pojo.Getdatafrom8266">
+        INSERT INTO getDataFrom8266 VALUES (#{lightValue},#{humidity},#{temperature},#{soilValue},#{high},#{lightState},#{pumpState},#{dcMotoState},#{steppingMotoState},#{time})
+    </insert>
+
+    <!--持久化用户-->
+    <insert id="insertUser" parameterType="com.liqiqi.pojo.User">
+        INSERT INTO  usermessage VALUES (#{username},#{password})
+    </insert>
+
+    <!--持久化当前选定作物环境表-->
+    <insert id="insertNowSelecteCropGrowthEnvirMessage" parameterType="com.liqiqi.pojo.CropGrowthEnvirMessage">
+        INSERT into nowSelecteCropGrowthEnvirMessage VALUES (#{cropsName},#{lightThresholdValue},#{humidityThresholdValue},#{temperatureThresholdValue},#{soilThresholdValue},#{highThresholdValue},#{time})
+    </insert>
+
+    <!--持久化农作物生长环境信息-->
+    <insert id="insertCropGrowthEnvirMessage" parameterType="com.liqiqi.pojo.CropGrowthEnvirMessage">
+        INSERT into cropGrowthEnvirMessage VALUES (#{cropsName},#{lightThresholdValue},#{humidityThresholdValue},#{temperatureThresholdValue},#{soilThresholdValue},#{highThresholdValue},#{time})
+    </insert>
+
+
+    <select id="findUserByid" parameterType="int" resultType="com.liqiqi.pojo.User">
+        SELECT * FROM t_user WHERE id=#{int}
+    </select>
+
+    <!--查询对灯光最后的指令-->
+    <select id="selectLight" resultType="java.lang.String">
+        select longRangeControlLight from longRangeControlLight;
+    </select>
+
+    <!--查询对步进电机最后的指令-->
+    <select id="selectSteppingMoto" resultType="java.lang.String">
+        SELECT longRangeControlSteppingmotor FROM longRangeControlSteppingmotor
+    </select>
+
+    <!--查询对直流电机最后的指令-->
+    <select id="selectDcMoto" resultType="java.lang.String">
+        select longRangeControlDcmotor from longRangeControlDcmotor;
+    </select>
+
+    <!--查询对水泵最后的指令-->
+    <select id="selectWaterPump" resultType="java.lang.String">
+        SELECT longRangeControlWaterpump FROM longRangeControlWaterpump
+    </select>
+
+    <!--查询对手动控制最后的指令-->
+    <select id="selectManual" resultType="java.lang.String">
+        SELECT manual FROM manual
+    </select>
+
+    <!--查询所有用户-->
+    <select id="selectUser" resultType="com.liqiqi.pojo.User">
+        SELECT * FROM usermessage
+    </select>
+
+    <!--查询灯执行状态记录-->
+    <select id="selectLightActionStatue" resultType="com.liqiqi.pojo.LightActionStatue">
+        SELECT lightState,time FROM getdatafrom8266
+    </select>
+
+    <!--查询风扇运行状态记录-->
+    <select id="selectDcMotoActionStatue" resultType="com.liqiqi.pojo.DcMotoActionState">
+        SELECT dcMotoState,time FROM getdatafrom8266
+    </select>
+
+    <!--查询步进电机执行状态记录-->
+    <select id="selectSteppingMotoActionStatue" resultType="com.liqiqi.pojo.SteppingMotoActionState">
+        SELECT steppingMotoState,time FROM getdatafrom8266
+    </select>
+
+    <!--查询水泵执行状态记录-->
+    <select id="selectPumpActionStatue" resultType="com.liqiqi.pojo.PumpActionState">
+        SELECT pumpState,time FROM getdatafrom8266
+    </select>
+
+    <!--查询土壤湿度值和时间-->
+    <select id="selectSoilTime" resultType="com.liqiqi.pojo.Soil">
+        SELECT soilValue,time FROM getdatafrom8266
+    </select>
+
+    <!--获取所有传感器采集到的值-->
+    <select id="selectSensorValue" resultType="com.liqiqi.pojo.Sensors">
+        SELECT lightValue,high,humidity,soilValue,time FROM getdatafrom8266;
+    </select>
+
+    <!--查询数据库中所有农作物生长信息-->
+    <select id="selectAllCropGrowthEnvirMessage" resultType="com.liqiqi.pojo.CropGrowthEnvirMessage">
+        SELECT * FROM cropGrowthEnvirMessage
+    </select>
+
+    <!--查询选定农作物生长环境信息-->
+    <select id="selectCropGrowthEnvirMessage" resultType="com.liqiqi.pojo.CropGrowthEnvirMessage">
+        SELECT * FROM cropGrowthEnvirMessage WHERE cropsName=#{getCropName}
+    </select>
+
+    <!--查询用户选择的农作物和农作物生长环境信息-->
+    <select id="selectNowSelecteCropGrowthEnvirMessage" resultType="com.liqiqi.pojo.CropGrowthEnvirMessage">
+        SELECT * FROM nowSelecteCropGrowthEnvirMessage
+    </select>
+</mapper>
